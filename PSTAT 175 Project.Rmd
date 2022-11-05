@@ -1,0 +1,92 @@
+---
+title: "PSTAT 175 Project"
+author: "Emily Zhuang"
+date: "10/31/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/ezhuang/Downloads")
+```
+
+```{r}
+library(survival)
+data(kidney)
+#create survival vector
+survival_vec <- Surv(kidney$time,kidney$status)
+### fit kaplan meier curve
+fit <- survfit(survival_vec ~ 1)
+plot(kidneyfit, xlab = "Time", ylab = "S(t)", main = "Kaplan Meier Curve for Time Until")
+```
+
+```{r}
+library(KMsurv)
+data(pneumon)
+pneumon
+
+library(bayesSurv)
+data(tandmob2)
+tandmob2
+
+library(survival)
+data(bladder1)
+bladder1
+?bladder1
+
+data(colon)
+colon
+?colon
+
+kidney
+```
+
+```{r}
+library(survival)
+library(tidyverse)
+CPTAC_tibble_clean <- as_tibble(CPTAC) |>
+  filter(disease_type=="Adenomas and Adenocarcinomas") |>
+  drop_na(diag__days_to_recurrence) |>
+  drop_na(demo__vital_status)
+
+CPTAC_tibble_clean
+
+CPTAC_tibble_clean$demo__vital_status[CPTAC_tibble_clean$demo__vital_status == "Dead"] <- as.numeric(1)
+CPTAC_tibble_clean$demo__vital_status[CPTAC_tibble_clean$demo__vital_status == "Alive"] <- as.numeric(0)
+CPTAC_tibble_clean$demo__vital_status[CPTAC_tibble_clean$demo__vital_status == "Not Reported"] <-as.numeric(0)
+
+CPTAC_tibble_clean$demo__vital_status <- as.numeric(as.character(CPTAC_tibble_clean$demo__vital_status))
+
+survival_vec <- Surv(CPTAC_tibble_clean$diag__days_to_recurrence, CPTAC_tibble_clean$demo__vital_status)
+### fit kaplan meier curve
+fit <- survfit(survival_vec ~ 1)
+### plot kaplan meier curve
+plot(fit, main = "Kaplan Meier Curve for Time Until Recurrence of Disease", xlab = "Days", ylab = "S(t)")
+
+```
+survival Package
+bladder1: Data on recurrences of bladder cancer, used by many people to demonstrate methodology for recurrent event modelling
+
+cgd : Data are from a placebo controlled trial of gamma interferon in chronic granulotomous disease (CGD).
+
+colon: Data on the effectiveness of chemotherapy on colon cancer.
+
+mgus : Natural history of 241 subjects with monoclonal gammapothy of undetermined significance (MGUS).
+
+nwtco: Data from the National Wilm’s Tumor Study.
+
+KMsurv Package
+After loading the package, you will to call data(datasetname) in order to access these data sets.
+
+bfeed: Data on the duration of breast feeding.
+
+burn: Data on the treatment of burn victims. (Source LinkLinks to an external site.)
+
+larynx: Survival data for larynx cancer patients at different stages and ages.
+
+pneumon: Study on the age of children that had pneumonia.
+
+std: Study of the time until re-infection for STD patients including many covariates.
+
+bayesSurv Package
+tandmob2: Belgian study of the dental health of over 4,000 primary school children. You will need to call data(tandmob2) in order to access this data set.
